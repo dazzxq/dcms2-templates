@@ -1,0 +1,32 @@
+{
+    "name": "dazzxq/dcms2-templates",
+    "description": "Framework-agnostic post-header template engine shared by DCMS2 (CMS) and zmag/plcs/banquyen frontsites (Direction-E shared package).",
+    "type": "library",
+    "license": "proprietary",
+    "keywords": ["dcms2", "templates", "post-header", "render-engine"],
+    "require": {
+        "php": ">=8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5",
+        "phpstan/phpstan": "^1.11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dazzxq\\Dcms2Templates\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dazzxq\\Dcms2Templates\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "dcms2_min_frontsite_version": "0.1.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
