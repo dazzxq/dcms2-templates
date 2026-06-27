@@ -84,9 +84,9 @@ final class EngineTest extends TestCase
 
     public function testRenderWithFallbackUnknownContentKindUsesArticleDefault(): void
     {
-        // content_kind 'video' chưa khai báo default riêng → lùi về 'article' default ('standard'),
+        // content_kind lạ ('audio' — không khai báo default) → lùi về 'article' default ('standard'),
         // KHÔNG được throw unknown_slug (regression ISSUE-1).
-        $r = $this->realEngine()->renderWithFallback('khong-ton-tai', 'video', $this->vm(), new ArrayAdapter());
+        $r = $this->realEngine()->renderWithFallback('khong-ton-tai', 'audio', $this->vm(), new ArrayAdapter());
 
         $this->assertTrue($r->isFallback());
         $this->assertSame('standard', $r->renderedSlug);
@@ -107,6 +107,25 @@ final class EngineTest extends TestCase
         $this->assertTrue($r->isFallback());
         $this->assertSame('photostory', $r->renderedSlug);
         $this->assertSame('unknown_slug', $r->fallbackReason);
+    }
+
+    public function testRenderWithFallbackVideoKindUsesVideo(): void
+    {
+        $r = $this->realEngine()->renderWithFallback('khong-ton-tai', 'video', $this->vm(), new ArrayAdapter());
+
+        $this->assertTrue($r->isFallback());
+        $this->assertSame('video', $r->renderedSlug);
+        $this->assertSame('unknown_slug', $r->fallbackReason);
+    }
+
+    public function testAllSevenTemplatesRegistered(): void
+    {
+        $slugs = $this->realEngine()->listTemplates();
+
+        foreach (['standard', 'longform-default', 'cover', 'split', 'photostory', 'video', 'emagazine'] as $expected) {
+            $this->assertContains($expected, $slugs);
+        }
+        $this->assertCount(7, $slugs);
     }
 
     public function testTemplatesCompatibleWith(): void

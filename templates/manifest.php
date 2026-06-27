@@ -21,10 +21,10 @@ return [
     'engineVersion' => '0.1.0',
 
     'contentKindDefaults' => [
-        // CHỉ kind đã có template. 'article' BẮT BUỘC (base fallback). video thêm khi
-        // template video ship (F8) — tới đó kind video vẫn lùi về 'article'/standard.
+        // CHỉ kind đã có template. 'article' BẮT BUỘC (base fallback).
         'article' => 'standard',
         'photostory' => 'photostory',
+        'video' => 'video',
     ],
 
     'templates' => [
@@ -57,6 +57,19 @@ return [
             'contentKind' => 'photostory',
             'view' => 'photostory/header.php',
             'css' => ['photostory.css'],
+        ],
+        'video' => [
+            'minEngineVersion' => '0.1.0',
+            'contentKind' => 'video',
+            'view' => 'video/header.php',
+            'css' => ['video.css'],
+        ],
+        'emagazine' => [
+            // eMagazine không có header chrome → render rỗng, không CSS header.
+            'minEngineVersion' => '0.1.0',
+            'contentKind' => 'article',
+            'view' => 'emagazine/header.php',
+            'css' => [],
         ],
     ],
 ];
