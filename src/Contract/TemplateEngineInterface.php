@@ -61,6 +61,15 @@ interface TemplateEngineInterface
     public function getCurrentEngineVersion(): string;
 
     /**
+     * Class CSS host PHẢI wrap quanh header để stylesheet scope đúng layout
+     * (slug KHÔNG 1:1 với class: cover→td-post--cover-story). null nếu template
+     * không cần wrapper (vd emagazine no-header). Throw nếu slug lạ.
+     *
+     * @throws TemplateFallbackException
+     */
+    public function getWrapperClass(string $slug): ?string;
+
+    /**
      * URL CDN TUYỆT ĐỐI của các file CSS cho slug (host nhúng vào <head>).
      *
      * @return list<string>

@@ -15,7 +15,7 @@ use Dazzxq\Dcms2Templates\Model\RenderResult;
  * Stateless re: host — adapter truyền per-call. Chỉ giữ config package (đường dẫn
  * templates, CSS base) ở constructor, KHÔNG giữ state request.
  *
- * @phpstan-type TemplateDef array{minEngineVersion: string, contentKind: string, view: string, css: list<string>}
+ * @phpstan-type TemplateDef array{minEngineVersion: string, contentKind: string, view: string, css: list<string>, wrapperClass: string|null}
  */
 final class TemplateEngine implements TemplateEngineInterface
 {
@@ -119,6 +119,16 @@ final class TemplateEngine implements TemplateEngineInterface
     public function getCurrentEngineVersion(): string
     {
         return $this->engineVersion;
+    }
+
+    public function getWrapperClass(string $slug): ?string
+    {
+        $def = $this->templates[$slug] ?? null;
+        if ($def === null) {
+            throw new TemplateFallbackException($slug, 'unknown_slug');
+        }
+
+        return $def['wrapperClass'];
     }
 
     public function getTemplateCss(string $slug): array
@@ -226,11 +236,18 @@ final class TemplateEngine implements TemplateEngineInterface
                 $css[] = $cssFile;
             }
 
+            // wrapperClass: string không rỗng HOẶC null (template no-header). Mặc định null nếu vắng.
+            $wrapperClass = $def['wrapperClass'] ?? null;
+            if ($wrapperClass !== null && (!is_string($wrapperClass) || $wrapperClass === '')) {
+                throw $this->manifestError($manifestFile, sprintf("template '%s' wrapperClass phải là string không rỗng hoặc null", $slug));
+            }
+
             $templates[$slug] = [
                 'minEngineVersion' => $min,
                 'contentKind' => $kind,
                 'view' => $view,
                 'css' => $css,
+                'wrapperClass' => $wrapperClass,
             ];
         }
 

@@ -164,13 +164,42 @@ final class EngineTest extends TestCase
 
     public function testGetTemplateCssRelativeWhenNoBase(): void
     {
-        $this->assertSame(['standard.css'], $this->realEngine()->getTemplateCss('standard'));
+        $this->assertSame(['post-header.css'], $this->realEngine()->getTemplateCss('standard'));
     }
 
     public function testGetTemplateCssWithAbsoluteBase(): void
     {
         $engine = $this->realEngine('https://cdn.example/t/');
 
-        $this->assertSame(['https://cdn.example/t/standard.css'], $engine->getTemplateCss('standard'));
+        $this->assertSame(['https://cdn.example/t/post-header.css'], $engine->getTemplateCss('standard'));
+    }
+
+    public function testVideoTemplateCssIncludesPlayerStylesheet(): void
+    {
+        $this->assertSame(['post-header.css', 'video.css'], $this->realEngine()->getTemplateCss('video'));
+    }
+
+    public function testEmagazineHasNoCss(): void
+    {
+        $this->assertSame([], $this->realEngine()->getTemplateCss('emagazine'));
+    }
+
+    public function testGetWrapperClass(): void
+    {
+        $engine = $this->realEngine();
+
+        // Slug KHÔNG 1:1 với class.
+        $this->assertSame('td-post--standard', $engine->getWrapperClass('standard'));
+        $this->assertSame('td-post--longform', $engine->getWrapperClass('longform-default'));
+        $this->assertSame('td-post--cover-story', $engine->getWrapperClass('cover'));
+        $this->assertSame('td-post--photostory', $engine->getWrapperClass('photostory'));
+        // emagazine no-header → null.
+        $this->assertNull($engine->getWrapperClass('emagazine'));
+    }
+
+    public function testGetWrapperClassUnknownThrows(): void
+    {
+        $this->expectException(TemplateFallbackException::class);
+        $this->realEngine()->getWrapperClass('khong-ton-tai');
     }
 }

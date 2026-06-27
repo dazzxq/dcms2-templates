@@ -27,49 +27,63 @@ return [
         'video' => 'video',
     ],
 
+    // CSS: post-header.css = stylesheet DÙNG CHUNG (verbatim từ frontside, scope qua parent
+    // class .td-post--{layout} mà host wrap ở F12). KHÔNG split per-template vì responsive section
+    // gộp nhiều layout trong 1 selector. video thêm video.css (player 16:9 max-1280). emagazine = [].
+    //
+    // wrapperClass = class host PHẢI wrap quanh header để CSS scope đúng (slug KHÔNG 1:1 với class:
+    // cover→cover-story, longform-default→longform). emagazine=null (no header chrome). Lấy qua
+    // getWrapperClass() — F12 frontside + preview DCMS2 dùng để bọc đúng.
     'templates' => [
         'standard' => [
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'article',
             'view' => 'standard/header.php',
-            'css' => ['standard.css'],
+            'css' => ['post-header.css'],
+            'wrapperClass' => 'td-post--standard',
         ],
         'longform-default' => [
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'article',
             'view' => 'longform-default/header.php',
-            'css' => ['longform-default.css'],
+            'css' => ['post-header.css'],
+            'wrapperClass' => 'td-post--longform',
         ],
         'cover' => [
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'article',
             'view' => 'cover/header.php',
-            'css' => ['cover.css'],
+            'css' => ['post-header.css'],
+            'wrapperClass' => 'td-post--cover-story',
         ],
         'split' => [
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'article',
             'view' => 'split/header.php',
-            'css' => ['split.css'],
+            'css' => ['post-header.css'],
+            'wrapperClass' => 'td-post--split',
         ],
         'photostory' => [
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'photostory',
             'view' => 'photostory/header.php',
-            'css' => ['photostory.css'],
+            'css' => ['post-header.css'],
+            'wrapperClass' => 'td-post--photostory',
         ],
         'video' => [
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'video',
             'view' => 'video/header.php',
-            'css' => ['video.css'],
+            'css' => ['post-header.css', 'video.css'],
+            'wrapperClass' => 'td-post--video',
         ],
         'emagazine' => [
-            // eMagazine không có header chrome → render rỗng, không CSS header.
+            // eMagazine không có header chrome → render rỗng, không CSS header, không wrapper.
             'minEngineVersion' => '0.1.0',
             'contentKind' => 'article',
             'view' => 'emagazine/header.php',
             'css' => [],
+            'wrapperClass' => null,
         ],
     ],
 ];

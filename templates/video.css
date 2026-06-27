@@ -1,0 +1,34 @@
+/* ==========================================================================
+   VIDEO HEADER — player nhúng 16:9, max-width 1280px (spec user 2026-06-28)
+   Bổ sung cho post-header.css. Selector __video* chỉ có ở template video nên
+   KHÔNG cần scope .td-post--video (không đụng layout khác).
+   ========================================================================== */
+
+.td-post-header__video {
+    max-width: 1280px;
+    margin-inline: auto;
+}
+
+/* Khung tỉ lệ 16:9 responsive — iframe/video fill tuyệt đối bên trong. */
+.td-post-header__video-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+}
+
+.td-post-header__video-frame iframe,
+.td-post-header__video-el {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* Self-hosted <video> giữ tỉ lệ, không méo. */
+.td-post-header__video-el {
+    object-fit: contain;
+}

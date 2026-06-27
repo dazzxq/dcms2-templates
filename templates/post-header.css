@@ -1,0 +1,585 @@
+/* ============================================
+   Post Header Styles — BEM Convention
+   Component-based: mỗi layout type có PHP component riêng
+   Selector pattern: .td-post--{modifier} .td-post-header__{element}
+
+   LƯU Ý: bản gốc frontside có `@import '../components/author-card.css'` — ĐÃ BỎ
+   trong package. author-card (.td-author-card) là COMPONENT hover-card tác giả RIÊNG
+   của frontside (post-header chỉ render link data-author-slug, card render nơi khác).
+   Host (F12) tự load author-card.css qua pipeline riêng — KHÔNG thuộc template package.
+   ============================================ */
+
+/* ==========================================================================
+   CSS CUSTOM PROPERTIES
+   ========================================================================== */
+
+:root {
+    --ph-gap: 16px;
+    --ph-cover-h-photostory: 520px;
+    --ph-cover-w-split: 960px;
+    --ph-container-w-split: 1280px;
+}
+
+/* ==========================================================================
+   RESET & BASE STYLES
+   ========================================================================== */
+
+/* Reset để tránh conflict với site header */
+.td-post-header {
+    overflow: visible !important;
+    position: relative;
+    min-height: auto !important;
+    transition: none !important;
+    background: transparent !important;
+    color: inherit !important;
+    width: 100%;
+    /* Padding-bottom tạo khoảng cách header → first content. Match base figure
+       margin (1.5rem) cho rhythm consistent. Combined với rule first-child
+       margin-top:0 ở post.css → no double-stack giữa header padding và
+       figure margin-top. */
+    padding-bottom: 1.5rem;
+}
+
+.td-post--split .td-post-header::after {
+    content: '';
+    display: block;
+    max-width: var(--w-text, 640px);
+    margin-inline: auto;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* ==========================================================================
+   INNER CONTAINER
+   ========================================================================== */
+
+.td-post-header__inner {
+    margin-inline: auto;
+    width: 100%;
+}
+
+/* ==========================================================================
+   COVER IMAGE STYLES
+   ========================================================================== */
+
+.td-post-header__cover {
+    width: 100%;
+    position: relative;
+}
+
+.td-post-header__cover-box {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+.td-post-header__cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ==========================================================================
+   TYPOGRAPHY & COMMON STYLES
+   ========================================================================== */
+
+/* Kicker (Breadcrumb) */
+.td-post-header__kicker {
+    padding: 0 0 0.5rem 0;
+}
+
+.td-post-header__kicker a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.td-post-header__kicker a:hover {
+    color: var(--primary-600);
+}
+
+/* Topic */
+.td-post-header__topic {
+    margin-bottom: 0.5rem;
+}
+
+.td-post-header__topic a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.td-post-header__topic img {
+    display: block;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    max-width: 100%;
+    height: 20px;
+}
+
+/* Headline (Title) */
+.td-post-header__headline {
+    font-weight: 600;
+    line-height: 1.39;
+    color: rgb(34, 34, 34);
+    margin-bottom: 1rem;
+}
+
+/* Byline (Meta) */
+.td-post-header__byline {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.td-post-header__author {
+    font-weight: 500;
+    color: #374151;
+}
+
+a.td-post-header__author {
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a.td-post-header__author:hover {
+    color: var(--t-accent, var(--primary-600));
+}
+
+.td-post-header__sep {
+    margin: 0 0.5rem;
+    color: #d1d5db;
+}
+
+.td-post-header__date {
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   DECK (SAPO / EXCERPT) STYLES
+   Typography: font-size & line-height match with paragraph in article content
+   Base: 1.125rem / 1.8 (same as .dcms-article-content p)
+   ========================================================================== */
+
+.td-post-header__excerpt {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #374151;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   LAYOUT: STANDARD (type_id 1) — Không cover, left aligned
+   ========================================================================== */
+
+.td-post--standard .td-post-header__kicker {
+    text-align: left;
+}
+
+.td-post--standard .td-post-header__topic {
+    text-align: left;
+}
+
+.td-post--standard .td-post-header__headline {
+    font-size: 2rem;
+    text-align: left;
+}
+
+.td-post--standard .td-post-header__byline {
+    text-align: left;
+    max-width: var(--w-text);
+}
+
+.td-post--standard .td-post-header__excerpt {
+    text-align: left;
+    max-width: var(--w-text);
+}
+
+
+/* ==========================================================================
+   LAYOUT: LONGFORM (type_id 2) — Không cover, center aligned, accent line
+   ========================================================================== */
+
+.td-post--longform .td-post-header__inner {
+    max-width: 740px;
+}
+
+.td-post--longform .td-post-header__kicker {
+    text-align: center;
+}
+
+.td-post--longform .td-post-header__topic {
+    text-align: center;
+}
+
+.td-post--longform .td-post-header__headline {
+    font-size: 2.25rem;
+    text-align: center;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.td-post--longform .td-post-header__byline {
+    text-align: center;
+}
+
+.td-post--longform .td-post-header__byline::after {
+    content: '';
+    display: block;
+    margin: 0 auto;
+    width: 108px;
+    height: 3px;
+    background: var(--primary-600);
+    margin-top: 15px;
+}
+
+.td-post--longform .td-post-header__excerpt {
+    text-align: center;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==========================================================================
+   LAYOUT: COVER-STORY (type_id 3) — Cover top 24:9, center aligned
+   ========================================================================== */
+
+.td-post--cover-story .td-post-header__cover {
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(-50vw + 50%);
+    margin-bottom: 2rem;
+}
+
+.td-post--cover-story .td-post-header__cover-box {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 24 / 9;
+    overflow: hidden;
+}
+
+.td-post--cover-story .td-post-header__cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.td-post--cover-story .td-post-header__kicker {
+    text-align: center;
+}
+
+.td-post--cover-story .td-post-header__topic {
+    text-align: center;
+}
+
+.td-post--cover-story .td-post-header__headline {
+    font-size: 2.25rem;
+    text-align: center;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.td-post--cover-story .td-post-header__byline {
+    text-align: center;
+}
+
+.td-post--cover-story .td-post-header__byline::after {
+    content: '';
+    display: block;
+    margin: 0 auto;
+    width: 108px;
+    height: 3px;
+    background: var(--primary-600);
+    margin-top: 15px;
+}
+
+.td-post--cover-story .td-post-header__excerpt {
+    text-align: center;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==========================================================================
+   LAYOUT: SPLIT (type_id 4) — Headline trái overlay, cover phải
+   Mobile (<768px): stack dọc
+   Desktop (>=768px): CSS Grid 2 cột, cover align với p 640px căn giữa
+   ========================================================================== */
+
+/* ≤1024px: Stack dọc — cover trên, meta dưới */
+@media (max-width: 1024px) {
+    .td-post--split .td-post-header {
+        max-width: var(--w-text);
+        margin-inline: auto;
+        margin-bottom: 0;
+    }
+
+    .td-post--split .td-post-header__inner {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .td-post--split .td-post-header__cover {
+        order: -1;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+    }
+
+    .td-post--split .td-post-header__cover-box {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+    }
+
+    .td-post--split .td-post-header__cover-img {
+        object-fit: cover;
+    }
+
+    .td-post--split .td-post-header__headline {
+        font-size: 1.5rem;
+        background: none;
+        padding: 0;
+    }
+
+    .td-post--split .td-post-header__headline-block {
+        margin-top: 1rem;
+    }
+
+    .td-post--split .td-post-header__excerpt {
+        padding-bottom: 1rem;
+    }
+}
+
+/* Desktop: CSS Grid — cover align với p 640px */
+@media (min-width: 1025px) {
+    .td-post--split .td-post-header__inner {
+        max-width: var(--ph-container-w-split); /* 1280px */
+        width: 100%;
+        margin: 0 auto;
+        position: relative;
+        display: grid;
+        grid-template-columns: min(calc((100vw - 640px) / 2 - 1rem), calc((var(--ph-container-w-split) - 640px) / 2 - 1rem)) 1fr;
+        grid-template-rows: auto;
+        align-items: center;
+        column-gap: 0;
+    }
+
+    /* Headline Block: overlay lên cover */
+    .td-post--split .td-post-header__headline-block {
+        grid-row: 1;
+        grid-column: 1 / 3;
+        z-index: 2;
+        max-width: 740px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-left: 2rem;
+    }
+
+    /* Cover: bắt đầu từ column 2 = vị trí p 640px căn giữa */
+    .td-post--split .td-post-header__cover {
+        width: 100%;
+        max-width: var(--ph-cover-w-split); /* Max 960px */
+        grid-row: 1;
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .td-post--split .td-post-header__cover-box {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 3 / 2;
+    }
+
+    .td-post--split .td-post-header__cover-img {
+        object-fit: cover;
+    }
+
+    /* Text styles */
+    .td-post--split .td-post-header__kicker {
+        text-align: left;
+    }
+
+    .td-post--split .td-post-header__topic {
+        text-align: left;
+    }
+
+    .td-post--split .td-post-header__headline {
+        font-size: 2.25rem;
+        text-align: left;
+        line-height: 1.2;
+        color: #000000;
+        margin: 0;
+        background: #ffffffe6;
+        padding: 1rem 1rem 1rem 0;
+    }
+
+    .td-post--split .td-post-header__byline {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .td-post--split .td-post-header__author {
+        display: block;
+    }
+
+    .td-post--split .td-post-header__sep {
+        display: none;
+    }
+
+    .td-post--split .td-post-header__date {
+        display: block;
+    }
+
+    /* Deck: align với p 640px căn giữa viewport/container */
+    .td-post--split .td-post-header__excerpt {
+        max-width: var(--ph-container-w-split);
+        margin-inline: auto;
+        margin-top: 2rem;
+        width: 640px;
+        max-width: 640px;
+        margin-left: min(calc((100vw - 640px) / 2 - 1rem), calc((var(--ph-container-w-split) - 640px) / 2 - 1rem));
+        margin-right: auto;
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+}
+
+/* ==========================================================================
+   LAYOUT: PHOTOSTORY (type_id 7) — Cover top lớn, center aligned
+   ========================================================================== */
+
+.td-post--photostory .td-post-header__cover-box {
+    height: var(--ph-cover-h-photostory);
+}
+
+.td-post--photostory .td-post-header__kicker {
+    text-align: center;
+}
+
+.td-post--photostory .td-post-header__topic {
+    text-align: center;
+}
+
+.td-post--photostory .td-post-header__headline {
+    font-size: 2.25rem;
+    text-align: center;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.td-post--photostory .td-post-header__byline {
+    text-align: center;
+}
+
+.td-post--photostory .td-post-header__byline::after {
+    content: '';
+    display: block;
+    margin: 0 auto;
+    width: 108px;
+    height: 3px;
+    background: var(--primary-600);
+    margin-top: 15px;
+}
+
+.td-post--photostory .td-post-header__excerpt {
+    text-align: center;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .td-post--standard .td-post-header__inner {
+        max-width: var(--w-text);
+        margin-inline: auto;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    /* Post header max-width = content width (640px) cho L1 standard + longform */
+    .td-post--standard .td-post-header__inner,
+    .td-post--longform .td-post-header__inner {
+        max-width: var(--w-text, 640px);
+        margin-inline: auto;
+    }
+
+    .td-post-header__cover {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        width: calc(100% + 2rem);
+    }
+
+    /* Title sizes mobile */
+    .td-post--standard .td-post-header__headline {
+        font-size: 1.5rem;
+    }
+
+    .td-post--longform .td-post-header__headline,
+    .td-post--cover-story .td-post-header__headline {
+        font-size: 1.5rem;
+        text-align: left;
+    }
+
+    /* Deck mobile: left aligned for readability */
+    .td-post--longform .td-post-header__excerpt,
+    .td-post--cover-story .td-post-header__excerpt {
+        text-align: left;
+    }
+
+    /* Byline mobile */
+    .td-post--longform .td-post-header__byline,
+    .td-post--cover-story .td-post-header__byline {
+        text-align: left;
+    }
+
+    .td-post--longform .td-post-header__byline::after,
+    .td-post--cover-story .td-post-header__byline::after {
+        display: none;
+    }
+
+    /* Kicker mobile */
+    .td-post--longform .td-post-header__kicker,
+    .td-post--cover-story .td-post-header__kicker {
+        text-align: left;
+    }
+
+    /* Topic mobile */
+    .td-post--longform .td-post-header__topic,
+    .td-post--cover-story .td-post-header__topic {
+        text-align: left;
+    }
+}
+
+/* ==========================================================================
+   RESPONSIVE: 768px and below — Deck full width
+   Typography consistency: Deck width matches content text behavior
+   Desktop: 640px centered | Mobile: 100% full width with padding
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .td-post-header__excerpt,
+    .td-post--standard .td-post-header__excerpt,
+    .td-post--longform .td-post-header__excerpt,
+    .td-post--cover-story .td-post-header__excerpt,
+    .td-post--split .td-post-header__excerpt {
+        max-width: 100%;
+    }
+}
