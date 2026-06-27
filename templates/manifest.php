@@ -33,5 +33,11 @@ return [
             'view' => 'standard/header.php',
             'css' => ['standard.css'],
         ],
+        'longform-default' => [
+            'minEngineVersion' => '0.1.0',
+            'contentKind' => 'article',
+            'view' => 'longform-default/header.php',
+            'css' => ['longform-default.css'],
+        ],
     ],
 ];
