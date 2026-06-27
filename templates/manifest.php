@@ -21,9 +21,10 @@ return [
     'engineVersion' => '0.1.0',
 
     'contentKindDefaults' => [
-        // CHỈ kind đã có template. 'article' BẮT BUỘC (base fallback). photostory/video
-        // thêm vào khi template tương ứng ship (F8/F9) — đến lúc đó chúng vẫn lùi về 'standard'.
+        // CHỉ kind đã có template. 'article' BẮT BUỘC (base fallback). video thêm khi
+        // template video ship (F8) — tới đó kind video vẫn lùi về 'article'/standard.
         'article' => 'standard',
+        'photostory' => 'photostory',
     ],
 
     'templates' => [
@@ -38,6 +39,24 @@ return [
             'contentKind' => 'article',
             'view' => 'longform-default/header.php',
             'css' => ['longform-default.css'],
+        ],
+        'cover' => [
+            'minEngineVersion' => '0.1.0',
+            'contentKind' => 'article',
+            'view' => 'cover/header.php',
+            'css' => ['cover.css'],
+        ],
+        'split' => [
+            'minEngineVersion' => '0.1.0',
+            'contentKind' => 'article',
+            'view' => 'split/header.php',
+            'css' => ['split.css'],
+        ],
+        'photostory' => [
+            'minEngineVersion' => '0.1.0',
+            'contentKind' => 'photostory',
+            'view' => 'photostory/header.php',
+            'css' => ['photostory.css'],
         ],
     ],
 ];

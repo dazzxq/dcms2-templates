@@ -99,6 +99,16 @@ final class EngineTest extends TestCase
         new TemplateEngine(__DIR__ . '/fixtures/bad-manifest');
     }
 
+    public function testRenderWithFallbackPhotostoryKindUsesPhotostory(): void
+    {
+        // content_kind 'photostory' giờ có default riêng → fallback về 'photostory' (không phải article).
+        $r = $this->realEngine()->renderWithFallback('khong-ton-tai', 'photostory', $this->vm(), new ArrayAdapter());
+
+        $this->assertTrue($r->isFallback());
+        $this->assertSame('photostory', $r->renderedSlug);
+        $this->assertSame('unknown_slug', $r->fallbackReason);
+    }
+
     public function testTemplatesCompatibleWith(): void
     {
         $engine = $this->fixtureEngine();
