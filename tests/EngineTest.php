@@ -99,13 +99,17 @@ final class EngineTest extends TestCase
         new TemplateEngine(__DIR__ . '/fixtures/bad-manifest');
     }
 
-    public function testRenderWithFallbackPhotostoryKindUsesPhotostory(): void
+    public function testRenderWithFallbackPhotostoryKindFallsBackToArticleStandard(): void
     {
-        // content_kind 'photostory' giờ có default riêng → fallback về 'photostory' (không phải article).
+        // v0.3.0 (post taxonomy refactor PR 5): 'photostory' default DROPPED from
+        // contentKindDefaults. Caller passing content_kind='photostory' now falls back to
+        // 'article' base default ('standard'). The 'photostory' template entry remains in
+        // manifest.templates[] for direct $engine->render('photostory', ...) backwards-compat
+        // (covered by EngineFallbackV03Test::test_29 + test_30).
         $r = $this->realEngine()->renderWithFallback('khong-ton-tai', 'photostory', $this->vm(), new ArrayAdapter());
 
         $this->assertTrue($r->isFallback());
-        $this->assertSame('photostory', $r->renderedSlug);
+        $this->assertSame('standard', $r->renderedSlug);
         $this->assertSame('unknown_slug', $r->fallbackReason);
     }
 
@@ -159,8 +163,8 @@ final class EngineTest extends TestCase
 
     public function testGetCurrentEngineVersion(): void
     {
-        // Bumped from 0.1.0 → 0.2.0 in v0.2.0 release (post taxonomy refactor PR 3).
-        $this->assertSame('0.2.0', $this->realEngine()->getCurrentEngineVersion());
+        // v0.3.0 release (post taxonomy refactor PR 5 — drop legacyTypeId + drop 'photostory' default).
+        $this->assertSame('0.3.0', $this->realEngine()->getCurrentEngineVersion());
     }
 
     public function testGetTemplateCssRelativeWhenNoBase(): void

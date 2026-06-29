@@ -18,20 +18,23 @@ declare(strict_types=1);
  * v0.1.0 sẽ đủ 7 slug; hiện mới `standard` (F3 vertical slice). F4-F9 thêm dần.
  */
 return [
-    'engineVersion' => '0.2.0',
+    'engineVersion' => '0.3.0',
 
     'contentKindDefaults' => [
         // CHỉ kind đã có template. 'article' BẮT BUỘC (base fallback).
         //
-        // v0.2.0 (dcms2 PR 3, 2026-06-29): added 'longform' + 'emagazine' để map content_kind enum
-        // mới từ DCMS2 PR 1a (article/longform/video/emagazine). 'photostory' KEEP để backwards-compat
-        // với caller v0.1.0 truyền content_kind='photostory' qua renderWithFallback (deprecated —
-        // PR 5/v0.3.0 sẽ remove).
+        // v0.3.0 (dcms2 PR 5, 2026-06-30): DROPPED 'photostory' default entry post-R44
+        // frontside flag-flip 3/3 sites verified clean. Photostory is now an additive body
+        // modifier on longform (content_kind='longform' + is_photostory=true) — handled
+        // via SlugResolver primary path, NOT a dedicated content_kind.
+        //
+        // The 'photostory' TEMPLATE entry below in templates[] is KEPT — backwards-compat
+        // for explicit $engine->render('photostory', ...) callers. Only the default
+        // mapping is removed.
         'article' => 'standard',
         'longform' => 'longform-default',
         'video' => 'video',
         'emagazine' => 'emagazine',
-        'photostory' => 'photostory',  // @deprecated — remove in v0.3.0
     ],
 
     // CSS: post-header.css = stylesheet DÙNG CHUNG (verbatim từ frontside, scope qua parent

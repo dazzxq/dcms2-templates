@@ -8,14 +8,17 @@ use Dazzxq\Dcms2Templates\Resolver\SlugResolver;
 use PHPUnit\Framework\TestCase;
 
 /**
- * v0.2.0 SlugResolver tests. Plan (codex APPROVE R2/2):
- * dcms2 .planning/2026-06-29-pr-3-dcms2-templates-v0.2.0-plan.md
+ * v0.3.0 SlugResolver tests. Plan (codex APPROVE R4/4):
+ * dcms2 .planning/2026-06-30-pr-5-dcms2-templates-v0.3.0-plan.md
  *
- * 23 cases covering:
+ * 16 cases covering:
  *   - Primary new-contract path (content_kind + header_variant)
  *   - Photostory + Mini Magazine flags ADDITIVE (don't change slug)
- *   - Legacy type_id fallback (transition window)
- *   - Defensive defaults (unknown content_kind / header_variant / legacyTypeId)
+ *   - Defensive defaults (unknown content_kind / header_variant / null content_kind)
+ *   - Signature contract (4 params, legacyTypeId dropped post-R44 verify)
+ *
+ * v0.2.0 legacy fallback tests (T11-T19) REMOVED — frontside R44 confirmed
+ * 0 published row hits the legacy path; PR 2 backfill 226 rows clean.
  */
 final class SlugResolverTest extends TestCase
 {
@@ -73,56 +76,31 @@ final class SlugResolverTest extends TestCase
         $this->assertSame('emagazine', SlugResolver::resolve('emagazine'));
     }
 
-    // Section 2 — Legacy fallback (content_kind=null).
+    // Section 2 — Defensive defaults.
+    // v0.3.0 — legacy fallback tests T11-T19 REMOVED (post-R44 verify clean,
+    // 0 published row hits legacy path, PR 2 backfill 226 rows clean).
+    // Replaced with single defensive null test + signature-contract test.
 
-    public function test_11_null_kind_with_legacy_type_1_resolves_to_standard(): void
+    public function test_null_content_kind_resolves_to_standard_defensive_default(): void
     {
-        $this->assertSame('standard', SlugResolver::resolve(null, null, false, false, 1));
-    }
-
-    public function test_12_null_kind_with_legacy_type_2_resolves_to_longform_default(): void
-    {
-        $this->assertSame('longform-default', SlugResolver::resolve(null, null, false, false, 2));
-    }
-
-    public function test_13_null_kind_with_legacy_type_3_resolves_to_cover(): void
-    {
-        $this->assertSame('cover', SlugResolver::resolve(null, null, false, false, 3));
-    }
-
-    public function test_14_null_kind_with_legacy_type_4_resolves_to_split(): void
-    {
-        $this->assertSame('split', SlugResolver::resolve(null, null, false, false, 4));
-    }
-
-    public function test_15_null_kind_with_legacy_type_5_resolves_to_longform_default(): void
-    {
-        // Codex R1 ISSUE-3: Mini Magazine legacy (count=0 prod, defensive).
-        $this->assertSame('longform-default', SlugResolver::resolve(null, null, false, false, 5));
-    }
-
-    public function test_16_null_kind_with_legacy_type_6_resolves_to_emagazine(): void
-    {
-        $this->assertSame('emagazine', SlugResolver::resolve(null, null, false, false, 6));
-    }
-
-    public function test_17_null_kind_with_legacy_type_7_resolves_to_photostory(): void
-    {
-        // LEGACY transition-only — dedicated photostory header. Removed in PR 5.
-        $this->assertSame('photostory', SlugResolver::resolve(null, null, false, false, 7));
-    }
-
-    public function test_18_null_kind_null_type_resolves_to_standard(): void
-    {
+        // v0.3.0 — null content_kind no longer triggers legacy type_id fallback (param removed).
+        // Defensive: returns 'standard' (manifest guarantees this slug exists).
         $this->assertSame('standard', SlugResolver::resolve(null));
+        $this->assertSame('standard', SlugResolver::resolve(null, 'longform'));
+        $this->assertSame('standard', SlugResolver::resolve(null, null, true, true));
     }
 
-    public function test_19_null_kind_unknown_type_resolves_to_standard(): void
+    public function test_resolver_signature_drops_legacyTypeId_param(): void
     {
-        $this->assertSame('standard', SlugResolver::resolve(null, null, false, false, 999));
+        // v0.3.0 codex R1 sig-change coverage — reflection assert method has exactly 4 params.
+        $rm = new \ReflectionMethod(SlugResolver::class, 'resolve');
+        $this->assertCount(4, $rm->getParameters(), 'SlugResolver::resolve() must have exactly 4 params post-v0.3.0 (legacyTypeId dropped)');
+        $paramNames = array_map(fn ($p) => $p->getName(), $rm->getParameters());
+        $this->assertSame(['contentKind', 'headerVariant', 'isPhotostory', 'isMiniMagazine'], $paramNames);
+        $this->assertNotContains('legacyTypeId', $paramNames);
     }
 
-    // Section 3 — Defensive defaults.
+    // Section 3 — Defensive defaults (unknown values).
 
     public function test_20_unknown_content_kind_resolves_to_standard(): void
     {

@@ -30,7 +30,11 @@ interface TemplateEngineInterface
      * Render có fallback mềm về template mặc định của content_kind.
      * KHÔNG throw cho slug lạ/incompatible — fallback + ghi fallbackReason.
      *
-     * @param string $contentKind 'article' | 'photostory' | 'video' (quyết default template)
+     * @param string $contentKind 'article' | 'longform' | 'video' | 'emagazine' | string
+     *                            (quyết default template). v0.3.0 (PR 5): 'photostory' dropped
+     *                            from contentKindDefaults; unknown/dropped kinds fall back to
+     *                            'article' base default ('standard'). The 'photostory' TEMPLATE
+     *                            entry still exists in manifest for direct render() callers.
      */
     public function renderWithFallback(
         string $slug,

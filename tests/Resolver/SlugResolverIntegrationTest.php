@@ -30,39 +30,38 @@ final class SlugResolverIntegrationTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: ?string, 1: ?string, 2: bool, 3: bool, 4: ?int}>
+     * v0.3.0 — 9 primary-path cases (legacy type_id datasets removed; resolver signature
+     * no longer accepts legacyTypeId param).
+     *
+     * @return array<string, array{0: ?string, 1: ?string, 2: bool, 3: bool}>
      */
     public static function taxonomyStateProvider(): array
     {
         return [
-            'article'                              => ['article',   null,           false, false, null],
-            'longform default'                     => ['longform',  'longform',     false, false, null],
-            'longform cover_story'                 => ['longform',  'cover_story',  false, false, null],
-            'longform split'                       => ['longform',  'split',        false, false, null],
-            'longform null-header'                 => ['longform',  null,           false, false, null],
-            'longform+is_photostory (additive)'    => ['longform',  null,           true,  false, null],
-            'longform+is_mini_magazine (additive)' => ['longform',  'cover_story',  false, true,  null],
-            'video'                                => ['video',     null,           false, false, null],
-            'emagazine'                            => ['emagazine', null,           false, false, null],
-            'legacy type_id=1'                     => [null,        null,           false, false, 1],
-            'legacy type_id=2'                     => [null,        null,           false, false, 2],
-            'legacy type_id=7 (photostory header)' => [null,        null,           false, false, 7],
+            'article'                              => ['article',   null,           false, false],
+            'longform default'                     => ['longform',  'longform',     false, false],
+            'longform cover_story'                 => ['longform',  'cover_story',  false, false],
+            'longform split'                       => ['longform',  'split',        false, false],
+            'longform null-header'                 => ['longform',  null,           false, false],
+            'longform+is_photostory (additive)'    => ['longform',  null,           true,  false],
+            'longform+is_mini_magazine (additive)' => ['longform',  'cover_story',  false, true],
+            'video'                                => ['video',     null,           false, false],
+            'emagazine'                            => ['emagazine', null,           false, false],
         ];
     }
 
     /**
-     * Test 24 — SlugResolver output → TemplateEngine::render() works end-to-end.
+     * SlugResolver output → TemplateEngine::render() works end-to-end.
      *
      * @dataProvider taxonomyStateProvider
      */
-    public function test_24_resolver_to_engine_pipeline_renders(
+    public function test_resolver_to_engine_pipeline_renders(
         ?string $contentKind,
         ?string $headerVariant,
         bool $isPhotostory,
         bool $isMiniMagazine,
-        ?int $legacyTypeId,
     ): void {
-        $slug = SlugResolver::resolve($contentKind, $headerVariant, $isPhotostory, $isMiniMagazine, $legacyTypeId);
+        $slug = SlugResolver::resolve($contentKind, $headerVariant, $isPhotostory, $isMiniMagazine);
 
         $result = $this->engine->render($slug, $this->vm, $this->adapter);
 
