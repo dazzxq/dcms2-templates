@@ -159,7 +159,8 @@ final class EngineTest extends TestCase
 
     public function testGetCurrentEngineVersion(): void
     {
-        $this->assertSame('0.1.0', $this->realEngine()->getCurrentEngineVersion());
+        // Bumped from 0.1.0 → 0.2.0 in v0.2.0 release (post taxonomy refactor PR 3).
+        $this->assertSame('0.2.0', $this->realEngine()->getCurrentEngineVersion());
     }
 
     public function testGetTemplateCssRelativeWhenNoBase(): void
